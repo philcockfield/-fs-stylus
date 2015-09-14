@@ -16,20 +16,17 @@ const readFileSync = (path) => {
 
 const toCss = (stylusText, path, callback) => {
     /*
+      TODO
       See: https://learnboost.github.io/stylus/docs/js.html
       either use 'import' or 'include' for mixins.
 
     */
-
     stylus(stylusText)
         .set("filename", path)
         .use(nib())
         .import("nib")
         // .import(fsPath.join(__dirname, "../mixins"))
-        .render((err, css) => {
-            if (err) { throw err; }
-            callback(css);
-          });
+        .render(callback);
   };
 
 
@@ -41,18 +38,31 @@ const toCss = (stylusText, path, callback) => {
  * @return {promise}.
  */
 export default (paths) => {
+  if (!_.isArray(paths)) { paths = [paths]; }
   return new Promise((resolve, reject) => {
       const result = [];
       let completed = 0;
+      let isDone = false;
 
-      const done = (path, css) => {
-          result.push({ path, css });
-          completed += 1;
-          if (completed === paths.length) { resolve(result); }
+      const done = (err, css, path) => {
+          if (isDone) { return; }
+          if (err) {
+            // Failed.
+            reject(err); isDone = true;
+          } else {
+            // Success.
+            result.push({ path, css });
+            completed += 1;
+            if (completed === paths.length) {
+              // All files have been transpiled.
+              resolve(result);
+              isDone = true;
+            }
+          }
         };
 
       paths.forEach(path => {
-        toCss(readFileSync(path), path, (css) => { done(path, css); });
+        toCss(readFileSync(path), path, (err, css) => { done(err, css, path); });
       });
   });
 };
