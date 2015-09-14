@@ -27,6 +27,7 @@ describe("compile-stylus", function() {
     });
   });
 
+
   it("throws descriptive error with invalid stylus content", (done) => {
     const path = fsPath.resolve(SAMPLES_PATH, "invalid.styl");
     compileStylus(path)
@@ -37,6 +38,9 @@ describe("compile-stylus", function() {
     })
   });
 
-  it.skip("imports [*.mixin.styl] files", () => {});
+
+  it.skip("imports [*.mixin.styl] files", () => {
+
+  });
 
 });

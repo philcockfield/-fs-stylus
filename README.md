@@ -8,6 +8,7 @@ A super-fast caching CSS pre-processor compiler that finds, builds and monitors 
 - [ ] Cache (fs)
 - [ ] File-system monitoring (invalidate cache / chokidar)
 - [ ] Handle mixins
+- [ ] Compress in production - https://www.npmjs.com/package/clean-css
 
 
 ## Usage
@@ -17,9 +18,8 @@ A super-fast caching CSS pre-processor compiler that finds, builds and monitors 
   css.compile("./site", {
     watch: true,      // Default true on "development", false on "production"
   })
-  .then((result) => {
-
-  });
+  .then((result) => { ... })
+  .catch((err) => { ... });
 ```
 
 
