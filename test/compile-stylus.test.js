@@ -39,8 +39,26 @@ describe("compile-stylus", function() {
   });
 
 
-  it.skip("imports [*.mixin.styl] files", () => {
+  describe("mixins", function() {
+    it("imports 'nib' (by default)", (done) => {
+      compileStylus(fsPath.resolve(SAMPLES_PATH, "css/uses-nib.styl"))
+      .then((result) => {
+          expect(result[0].css).to.include("-webkit-border-radius: 5px;");
+          done();
+      });
+    });
 
+    it("imports 'mixin.styl' and '*.mixin.styl' files", (done) => {
+      compileStylus([
+          fsPath.resolve(SAMPLES_PATH, "css/mixin.styl"),
+          fsPath.resolve(SAMPLES_PATH, "css/child/child.styl"),
+          fsPath.resolve(SAMPLES_PATH, "mixins/const.mixin.styl")
+        ])
+      .then((result) => {
+          expect(result.length).to.equal(1); // Does not include mixin files.
+          expect(result[0].css).to.include("width: 960px"); // 960px is derived from mixin.
+          done();
+      });
+    });
   });
-
 });

@@ -3,30 +3,30 @@ import stylus from "stylus";
 import nib from "nib";
 import fs from "fs-extra";
 import fsPath from "path";
-// import chokidar from "chokidar";
 
 
 const readFileSync = (path) => {
-  if (fs.existsSync(path)) {
-    return fs.readFileSync(path).toString()
-  }
-};
+    if (fs.existsSync(path)) {
+      return fs.readFileSync(path).toString()
+    }
+  };
 
 
+const isMixin = (path) => {
+    const name = fsPath.basename(path, ".styl");
+    if (name === "mixin") { return true; }
+    if (_.endsWith(name, ".mixin")) { return true; }
+    return false;
+  };
 
-const toCss = (stylusText, path, callback) => {
-    /*
-      TODO
-      See: https://learnboost.github.io/stylus/docs/js.html
-      either use 'import' or 'include' for mixins.
 
-    */
-    stylus(stylusText)
+const toCss = (stylusText, path, mixins, callback) => {
+    const compiler = stylus(stylusText)
         .set("filename", path)
         .use(nib())
-        .import("nib")
-        // .import(fsPath.join(__dirname, "../mixins"))
-        .render(callback);
+        .import("nib");
+    mixins.forEach(path => { compiler.import(path); });
+    compiler.render(callback);
   };
 
 
@@ -43,6 +43,10 @@ export default (paths) => {
       const result = [];
       let completed = 0;
       let isDone = false;
+
+      // Extract mixin files.
+      const mixins = _(paths).filter(isMixin).value();
+      paths = _(paths).filter(path => !isMixin(path)).value();
 
       const done = (err, css, path) => {
           if (isDone) { return; }
@@ -62,7 +66,9 @@ export default (paths) => {
         };
 
       paths.forEach(path => {
-        toCss(readFileSync(path), path, (err, css) => { done(err, css, path); });
+        toCss(readFileSync(path), path, mixins, (err, css) => {
+          done(err, css, path);
+        });
       });
   });
 };
