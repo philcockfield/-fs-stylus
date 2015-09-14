@@ -1,4 +1,7 @@
 # fs-css
+
+[![Build Status](https://travis-ci.org/philcockfield/fs-css.svg?branch=master)](https://travis-ci.org/philcockfield/fs-css)
+
 A super-fast caching CSS pre-processor compiler that finds, builds and monitors files across the file-system.
 
 
