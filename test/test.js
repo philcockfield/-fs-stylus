@@ -1,12 +1,13 @@
 "use strict";
 import { expect } from "chai";
-import css from "../src";
 import fs from "fs-extra";
 import fsPath from "path";
+import css from "../src";
+
+const SAMPLES_PATH = "./test/samples"
 
 
 describe("configuration", function() {
-  const SAMPLES_PATH = "./test/samples"
   const deleteFolders = () => {
     // fs.removeSync(fsPath.resolve(SAMPLES_PATH));
   };
