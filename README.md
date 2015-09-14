@@ -1,5 +1,9 @@
-# fs-stylus
-A stylus compiler that finds and builds .styl files across the file-system.
+# fs-css
+A CSS pre-processor compiler that finds and builds and monitors files across the file-system.
+
+
+
+
 
 
 ## Run

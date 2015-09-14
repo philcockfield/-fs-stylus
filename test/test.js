@@ -2,7 +2,7 @@
 
 import { expect } from "chai";
 
-describe("fs-stylus tests", () => {
+describe("fs-css tests", () => {
   it("succeeds", () => {
     expect(123).to.equal(123);
   });

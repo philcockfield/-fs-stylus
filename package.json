@@ -1,7 +1,7 @@
 {
-  "name": "fs-stylus",
+  "name": "fs-css",
   "version": "0.0.1",
-  "description": "A stylus compiler that finds and builds .styl files across the file-system.",
+  "description": "A CSS pre-processor compiler that finds and builds and monitors files across the file-system.",
   "main": "./lib/index.js",
   "dependencies": {},
   "devDependencies": {
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/philcockfield/-fs-stylus"
+    "url": "https://github.com/philcockfield/fs-css"
   },
   "keywords": [
     "stylus,css,fs,compiler"
@@ -33,6 +33,6 @@
     "email": "phil@cockfield.net",
     "url": "https://github.com/philcockfield"
   },
-  "homepage": "https://github.com/philcockfield/-fs-stylus",
+  "homepage": "https://github.com/philcockfield/fs-css",
   "license": "MIT"
 }
