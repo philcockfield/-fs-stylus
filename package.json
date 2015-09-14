@@ -1,7 +1,7 @@
 {
   "name": "fs-css",
   "version": "0.0.1",
-  "description": "A CSS pre-processor compiler that finds and builds and monitors files across the file-system.",
+  "description": "A super-fast caching CSS pre-processor compiler that finds, builds and monitors files across the file-system.",
   "main": "./lib/index.js",
   "dependencies": {
     "bluebird": "^2.10.0",

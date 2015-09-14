@@ -1,5 +1,5 @@
 # fs-css
-A CSS pre-processor compiler that finds and builds and monitors files across the file-system.
+A super-fast caching CSS pre-processor compiler that finds, builds and monitors files across the file-system.
 
 
 ## Examples
@@ -8,10 +8,8 @@ A CSS pre-processor compiler that finds and builds and monitors files across the
   import css from "fs-css";
 
   css.compile({
-    preprocessor: "stylus",
-    path: [""], // String or array.
-    watch: true, // Default true.
-    ignore: [/node_modules/, /^\..*$/]
+    path: "./site",   // String or array.
+    watch: true,      // Default true.
   })
   .then((result) => {
 
