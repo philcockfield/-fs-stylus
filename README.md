@@ -9,7 +9,7 @@ A super-fast caching CSS pre-processor compiler that finds, builds and monitors 
 
   css.compile({
     path: "./site",   // String or array.
-    watch: true,      // Default true.
+    watch: true,      // Default true on "development", false on "production"
   })
   .then((result) => {
 
