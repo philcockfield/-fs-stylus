@@ -7,7 +7,7 @@ import css from "../src";
 const SAMPLES_PATH = "./test/samples"
 
 
-describe.only("paths", function() {
+describe("paths", function() {
   describe("paths param", function() {
     it("throws if not path was given", () => {
       expect(() => css.compile()).to.throw();
@@ -38,56 +38,26 @@ describe.only("paths", function() {
   });
 
 
-  describe.only(".build path", function() {
-    it("has a default build path (single file)", () => {
-      const path = `${ SAMPLES_PATH }/css`;
-      let hash = crypto.createHash("md5")
-      hash.update(fsPath.resolve(path));
-      hash = hash.digest("hex");
-      const buildPath = fsPath.join(__dirname, "../.build", hash);
-      const compiler = css.compile(path);
-      expect(compiler.paths.build).to.equal(fsPath.join(__dirname, "../.build", hash));
-    });
-
-    it("has a default build path (multiple file)", () => {
-      const paths = [`${ SAMPLES_PATH }/css`, `${ SAMPLES_PATH }/mixins`];
-      let hash = crypto.createHash("md5")
-      hash.update(fsPath.resolve(paths[0]));
-      hash.update(fsPath.resolve(paths[1]));
-      hash = hash.digest("hex");
-      const compiler = css.compile(paths);
-      const buildPath = fsPath.join(__dirname, "../.build", hash);
-      expect(compiler.paths.build).to.equal(fsPath.join(__dirname, "../.build", hash));
-    });
-
-
-    it("has a custom build path", () => {
-      const compiler = css.compile(`${ SAMPLES_PATH }/css`, { buildPath: "./build/foobar" });
-      expect(compiler.paths.build).to.equal(fsPath.resolve("./build/foobar"));
-    });
-  });
-
-
-  describe("sourceFiles", function() {
+  describe("files", function() {
     it("has no source files", () => {
       const compiler = css.compile(`${ SAMPLES_PATH }/empty`);
-      expect(compiler.paths.sourceFiles).to.eql([]);
+      expect(compiler.paths.files).to.eql([]);
     });
 
-    it("has [.css] and [.styl] files (deep)", () => {
+    it("has [.css] and [.styl] file paths (deep)", () => {
       const compiler = css.compile(`${ SAMPLES_PATH }/css`);
-      const sourceFiles = compiler.paths.sourceFiles;
-      expect(sourceFiles).to.include(fsPath.resolve(SAMPLES_PATH, "css/common.mixin.styl"));
-      expect(sourceFiles).to.include(fsPath.resolve(SAMPLES_PATH, "css/mixin.styl"));
-      expect(sourceFiles).to.include(fsPath.resolve(SAMPLES_PATH, "css/normalize.css"));
-      expect(sourceFiles).to.include(fsPath.resolve(SAMPLES_PATH, "css/child/child.styl"));
+      const files = compiler.paths.files;
+      expect(files).to.include(fsPath.resolve(SAMPLES_PATH, "css/common.mixin.styl"));
+      expect(files).to.include(fsPath.resolve(SAMPLES_PATH, "css/mixin.styl"));
+      expect(files).to.include(fsPath.resolve(SAMPLES_PATH, "css/normalize.css"));
+      expect(files).to.include(fsPath.resolve(SAMPLES_PATH, "css/child/child.styl"));
     });
 
-    it("does not have non CSS files", () => {
+    it("does not have non-CSS files", () => {
       const compiler = css.compile(SAMPLES_PATH);
-      const sourceFiles = compiler.paths.sourceFiles;
-      expect(sourceFiles).not.to.include(fsPath.resolve(SAMPLES_PATH, ".foo"));
-      expect(sourceFiles).not.to.include(fsPath.resolve(SAMPLES_PATH, "foo.js"));
+      const files = compiler.paths.files;
+      expect(files).not.to.include(fsPath.resolve(SAMPLES_PATH, ".foo"));
+      expect(files).not.to.include(fsPath.resolve(SAMPLES_PATH, "foo.js"));
     });
   });
 });

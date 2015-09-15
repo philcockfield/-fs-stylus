@@ -6,7 +6,7 @@ import css from "../src";
 const SAMPLES_PATH = "./test/samples"
 
 
-describe("compile CSS", function() {
+describe("compile", function() {
   it("throws if a directory is not specified as a path", () => {
     let fn = () => {
       css.compile(`${ SAMPLES_PATH }/css/page.styl`);

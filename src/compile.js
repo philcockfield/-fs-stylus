@@ -6,12 +6,10 @@ import compileStylus from "./compile-stylus";
 import loadCss from "./load-css";
 
 
-
-export default (sourceFiles) => {
+export default (paths) => {
   return new Promise((resolve, reject) => {
-      // Convert the source files into objects.
-      // NB: This ensures that the file-order (deepest to shallowest) is retained.
-      let files = sourceFiles.map(path => { return { path }});
+      const files = paths.map(path => { return { path }});
+
       const mergeIntoResult = (items) => {
           items.forEach(item => {
               const index = _(files).findIndex(m => m.path === item.path)
@@ -20,13 +18,15 @@ export default (sourceFiles) => {
       };
 
       // Compile stylus.
-      compileStylus(sourceFiles)
-          .then((result) => mergeIntoResult(result))
+      compileStylus(paths)
+          .then((result) => {
+              mergeIntoResult(result);
+          })
           .catch((err) => reject(err))
 
       // Add raw CSS.
       .then(() => {
-        loadCss(sourceFiles)
+        loadCss(paths)
             .then((result) => mergeIntoResult(result))
             .catch((err) => reject(err))
 

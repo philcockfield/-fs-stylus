@@ -1,5 +1,4 @@
 import _ from "lodash";
-import crypto from "crypto";
 import fs from "fs-extra";
 import fsPath from "path";
 import * as fsLocal from "./fs";
@@ -34,34 +33,20 @@ export default {
           if (!fs.lstatSync(path).isDirectory()) { throw new Error(`The CSS folder path '${ path }' is not a directory.`); }
       });
 
-    // Retrieve source file paths.
-    paths.sourceFiles = _.chain(paths)
+    // Retrieve source files.
+    paths.files = _.chain(paths)
         .map(path => fsLocal.childPaths(path))
         .flatten()
         .filter(path => _.contains(EXTENSIONS, fsPath.extname(path)))
         .value();
-
-
-    // Store the build path.
-    let buildPath = options.buildPath;
-    if (!_.isString(buildPath)) {
-      const hash = crypto.createHash("md5")
-      paths.forEach(path => hash.update(path));
-      buildPath = fsPath.join(__dirname, "../.build", hash.digest("hex"));
-    } else {
-      buildPath = fsPath.resolve(buildPath);
-    }
-    paths.build = buildPath;
-
 
     // Prepare options parameters.
     options.watch = options.watch === undefined
         ? (process.env.NODE_ENV !== "production")
         : options.watch;
 
-
     // Construct the return promise.
-    const promise = compile(paths.sourceFiles);
+    const promise = compile(paths.files);
     promise.options = options;
     promise.paths = paths;
 

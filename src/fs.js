@@ -1,6 +1,7 @@
 import _ from "lodash";
 import fs from "fs-extra";
 import fsPath from "path";
+import crypto from "crypto";
 
 
 export const childPaths = (dir, result = []) => {
@@ -22,6 +23,16 @@ export const readFileSync = (path) => {
       return fs.readFileSync(path).toString()
     }
   };
+
+
+
+export const hash = (paths) => {
+  if (!_.isArray(paths)) { paths = [paths]; }
+  const hash = crypto.createHash("md5")
+  paths.forEach(path => hash.update(path));
+  return hash.digest("hex");
+};
+
 
 
 
