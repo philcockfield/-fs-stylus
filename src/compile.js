@@ -13,7 +13,7 @@ const compile = (sourceFiles) => {
       // Convert the source files into objects.
       // NB: This ensures that the file-order (deepest to shallowest) is retained.
       let files = sourceFiles.map(path => { return { path }});
-      const mergeCss = (items) => {
+      const mergeIntoResult = (items) => {
           items.forEach(item => {
               const index = _(files).findIndex(m => m.path === item.path)
               files[index].css = item.css
@@ -22,13 +22,13 @@ const compile = (sourceFiles) => {
 
       // Compile stylus.
       compileStylus(sourceFiles)
-          .then((result) => mergeCss(result))
+          .then((result) => mergeIntoResult(result))
           .catch((err) => reject(err))
 
       // Add raw CSS.
       .then(() => {
         loadCss(sourceFiles)
-            .then((result) => mergeCss(result))
+            .then((result) => mergeIntoResult(result))
             .catch((err) => reject(err))
 
       // Compile into final result.
