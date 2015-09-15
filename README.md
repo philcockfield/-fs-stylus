@@ -2,7 +2,12 @@
 
 [![Build Status](https://travis-ci.org/philcockfield/fs-css.svg?branch=master)](https://travis-ci.org/philcockfield/fs-css)
 
-A super-fast caching CSS pre-processor compiler that finds, builds and monitors files across the file-system.
+A super-fast CSS pre-processor compiler that finds, builds, caches and monitors files across the file-system.
+
+Supported formats:
+- Plain CSS (`.css`)
+- Stylus (`.styl`)
+
 
 ## TODO
 - [ ] Build CSS into final artefact.
