@@ -5,6 +5,7 @@
 A super-fast caching CSS pre-processor compiler that finds, builds and monitors files across the file-system.
 
 ## TODO
+- [ ] Build CSS into final artefact.
 - [ ] Cache (fs)
 - [ ] File-system monitoring (invalidate cache / chokidar)
 - [ ] Compress in production - https://www.npmjs.com/package/clean-css

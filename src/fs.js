@@ -17,4 +17,47 @@ export const childPaths = (dir, result = []) => {
 
 
 
-// export const sourceFiles
+export const readFileSync = (path) => {
+    if (fs.existsSync(path)) {
+      return fs.readFileSync(path).toString()
+    }
+  };
+
+
+
+export const processFiles = (paths, handler) => {
+  if (!_.isArray(paths)) { paths = [paths]; }
+
+  return new Promise((resolve, reject) => {
+    const result = [];
+    let completed = 0;
+    let isDone = false;
+
+    const done = (err, item) => {
+        if (isDone) { return; }
+        if (err) {
+          // Failed.
+          reject(err); isDone = true;
+        } else {
+          // Success.
+          result.push(item);
+          completed += 1;
+          if (completed === paths.length) {
+            // All files have been processed.
+            resolve(result);
+            isDone = true;
+          }
+        }
+      };
+
+    if (paths.length === 0) {
+      resolve(result);
+    } else {
+      // Process each file
+      paths.forEach(path => {
+          const file = readFileSync(path);
+          handler({ path, file }, done);
+      });
+    }
+  });
+};

@@ -3,13 +3,8 @@ import stylus from "stylus";
 import nib from "nib";
 import fs from "fs-extra";
 import fsPath from "path";
+import * as fsLocal from "./fs";
 
-
-const readFileSync = (path) => {
-    if (fs.existsSync(path)) {
-      return fs.readFileSync(path).toString()
-    }
-  };
 
 
 const isMixin = (path) => {
@@ -39,36 +34,19 @@ const toCss = (stylusText, path, mixins, callback) => {
  */
 export default (paths) => {
   if (!_.isArray(paths)) { paths = [paths]; }
+
+  // Extract mixin files.
+  paths = _(paths).filter(path => _.endsWith(path, ".styl")).value();
+  const mixins = _(paths).filter(isMixin).value();
+  paths = _(paths).filter(path => !isMixin(path)).value();
+
+  // Compile Stylus => CSS.
   return new Promise((resolve, reject) => {
-      const result = [];
-      let completed = 0;
-      let isDone = false;
-
-      // Extract mixin files.
-      const mixins = _(paths).filter(isMixin).value();
-      paths = _(paths).filter(path => !isMixin(path)).value();
-
-      const done = (err, css, path) => {
-          if (isDone) { return; }
-          if (err) {
-            // Failed.
-            reject(err); isDone = true;
-          } else {
-            // Success.
-            result.push({ path, css });
-            completed += 1;
-            if (completed === paths.length) {
-              // All files have been transpiled.
-              resolve(result);
-              isDone = true;
-            }
-          }
-        };
-
-      paths.forEach(path => {
-        toCss(readFileSync(path), path, mixins, (err, css) => {
-          done(err, css, path);
-        });
-      });
+      fsLocal.processFiles(paths, (args, done) => {
+          const { file, path } = args;
+          toCss(file, path, mixins, (err, css) => done(err, { css, path }));
+      })
+      .then((result) => resolve(result))
+      .catch((err) => reject(err));
   });
 };

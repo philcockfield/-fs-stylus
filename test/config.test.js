@@ -7,22 +7,6 @@ const SAMPLES_PATH = "./test/samples"
 
 
 describe("configuration", function() {
-  describe("paths param", function() {
-    it("throws if not path was given", () => {
-      expect(() => css.compile()).to.throw();
-    });
-
-    it("converts single path to an array", () => {
-      const compiler = css.compile(SAMPLES_PATH);
-      expect(compiler.paths.length).to.equal(1);
-      expect(compiler.paths[0]).to.equal(fsPath.resolve(SAMPLES_PATH));
-    });
-
-    it("throws if a path does not exist", () => {
-      expect(() => css.compile("./foo")).to.throw();
-    });
-  });
-
   describe("options", function() {
     describe("watch", function() {
       let nodeEnv;
