@@ -10,8 +10,6 @@ Supported formats:
 
 
 ## TODO
-- [ ] Build CSS into final artefact.
-- [ ] Cache (fs)
 - [ ] File-system monitoring (invalidate cache / chokidar)
 - [ ] Compress in production - https://www.npmjs.com/package/clean-css
 

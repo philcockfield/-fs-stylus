@@ -18,11 +18,6 @@ const merge = (sourceFiles, targetFiles) => {
 };
 
 
-const loadFromCache = (ns, paths) => {
-
-};
-
-
 
 
 export default (ns, paths) => {
