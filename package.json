@@ -5,6 +5,7 @@
   "main": "./lib/index.js",
   "dependencies": {
     "bluebird": "^2.10.0",
+    "clean-css": "^3.4.3",
     "fs-extra": "^0.24.0",
     "lodash": "^3.10.1",
     "nib": "^1.1.0",

@@ -18,6 +18,15 @@ const merge = (sourceFiles, targetFiles) => {
 };
 
 
+const concatenate = (files) => {
+  return _.chain(files)
+               .map(item => item.css)
+               .compact()
+               .reduce((result, file) => result += file)
+               .value();
+};
+
+
 
 
 export default (ns, paths) => {
@@ -55,11 +64,7 @@ export default (ns, paths) => {
       // Concatenate into final result.
       .then(() => {
           try {
-            const css = _.chain(files)
-                         .map(item => item.css)
-                         .compact()
-                         .reduce((result, file) => result += file)
-                         .value();
+            const css = concatenate(files);
             resolve({ files, css });
           } catch (e) { reject(e) }
       })

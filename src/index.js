@@ -5,6 +5,7 @@ import fsWatch from "./fs-watch";
 import * as fsLocal from "./fs";
 import compile from "./compile";
 import cache from "./cache";
+import CleanCSS from "clean-css";
 import { EXTENSIONS } from "./const";
 
 const DEFAULTS = {
@@ -74,9 +75,8 @@ export default {
     const promise = new Promise((resolve, reject) => {
         compile(ns, paths.files)
         .then(result => {
-            if (options.cache === true) {
-              cache.value(cacheKey, result.css);
-            }
+            if (options.minify === true) { result.css = new CleanCSS().minify(result.css).styles; }
+            if (options.cache === true) { cache.value(cacheKey, result.css); }
             resolve(result);
         })
         .catch(err => reject(err));
