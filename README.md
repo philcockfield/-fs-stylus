@@ -11,7 +11,7 @@ Supported formats:
 
 
 ## Usage
-Pass a path, or array of paths, of the folders containing your css:
+Pass a path (or array of paths) to the folders containing your source files (.css, .styl):
 
 ```js
 import css from "fs-css";
@@ -38,14 +38,10 @@ css.compile("./path", { /* options */ });
 
 
 ## Stylus
-The [nib](http://tj.github.io/nib/) CSS3 extensions are automatically imported and are available in any of your `.styl` files.
+The [nib](http://tj.github.io/nib/) CSS3 extensions are automatically imported and are available in any of your **.styl** files.
 
-Create your own mixins, anywhere, by naming your file `<name>.mixin.styl`.  Just like the nib library, these mixins will be automatically available to all your `.styl` files.  No need to **@import** them.
+Create your own mixins, anywhere, by naming your file `<name>.mixin.styl`.  Just like the nib library, these mixins will be automatically available to all your **.styl** files.  No need to **@import** them.
 
 
 ## Test
-    # Run tests.
     npm test
-
-    # Watch and re-run tests.
-    npm run tdd
