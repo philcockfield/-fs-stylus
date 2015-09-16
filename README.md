@@ -19,7 +19,7 @@ Supported formats:
   import css from "fs-css";
 
   css.compile("./site", {
-    watch: true,      // Default true on "development", false on "production"
+    watch: true, // Default true on "development", false on "production"
   })
   .then((result) => { ... })
   .catch((err) => { ... });

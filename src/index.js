@@ -1,11 +1,11 @@
 import _ from "lodash";
 import fs from "fs-extra";
 import fsPath from "path";
+import fsWatch from "./fs-watch";
 import * as fsLocal from "./fs";
 import compile from "./compile";
-
-const EXTENSIONS = [".styl", ".css"];
-
+import compilerCache from "./compiler-cache";
+import { EXTENSIONS } from "./const";
 
 
 export default {
@@ -13,12 +13,14 @@ export default {
    * Starts a compiler for the given path(s).
    * @param {string|array} paths: The file-system paths to compile.
    * @param {object} options:
-   *                    - watch: Flag indicating if file-system watching is enabled.
-   *                             When on the cache is invaidated when the source files are changed.
-   *                             - True: default for 'development'
-   *                             - Fase: default for 'production'
+   *                    - watch:  Flag indicating if file-system watching is enabled.
+   *                    - minify: Flag indicating if the css should be minified.
    */
   compile(paths, options = {}) {
+
+    // TODO: Cache at the highest level.
+    // compilerCache.get(paths, options)
+
     // Prepare the paths.
     if (!_.isArray(paths)) { paths = _.compact([paths]); }
     if (paths.length === 0) { throw new Error(`File-system 'path' was not specified.`); }
@@ -41,15 +43,19 @@ export default {
         .value();
 
     // Prepare options parameters.
-    options.watch = options.watch === undefined
-        ? (process.env.NODE_ENV !== "production")
-        : options.watch;
+    options.watch = options.watch || false;
+    if (options.watch === true) {
+      fsWatch(paths); // Start the file-system watcher.
+    }
+
+    // Create the unique namespace for the compiler.
+    const ns = paths.map(item => item);
 
     // Construct the return promise.
-    const ns = paths.map(item => item);
     const promise = compile(ns, paths.files);
     promise.options = options;
     promise.paths = paths;
+    promise.css = null;
 
     // Finish up.
     return promise;

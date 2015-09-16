@@ -14,7 +14,11 @@ const remove = (buildPath) => {
 };
 
 
-
+/**
+ * Handles caching of CSS to the file-system.
+ *    This allows for start-up times, which is especially
+ *    useful when developing.
+ */
 export default {
   /**
    * Gets the item from the cache.

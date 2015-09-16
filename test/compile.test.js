@@ -16,7 +16,7 @@ describe("compile", function() {
 
   it("compiles all CSS in a folder", (done) => {
     css.compile(`${ SAMPLES_PATH }/css`)
-    .then((result) => {
+    .then(result => {
         expect(result.files).to.be.an.instanceof(Array);
         expect(result.css).to.include(".child {");
         expect(result.css).to.include("width: 960px");
@@ -30,11 +30,10 @@ describe("compile", function() {
 
   it("compiles a directory using mixins from another directory", (done) => {
     css.compile([`${ SAMPLES_PATH }/css`, `${ SAMPLES_PATH }/mixins`])
-    .then((result) => {
+    .then(result => {
         const match = ".child {\n  width: 960px;\n  position: absolute"; // Both these values derived from mixins.
         expect(result.css).to.include(match);
         done();
     })
   });
-
 });
