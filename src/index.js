@@ -4,11 +4,17 @@ import fsPath from "path";
 import fsWatch from "./fs-watch";
 import * as fsLocal from "./fs";
 import compile from "./compile";
-import compilerCache from "./compiler-cache";
+import cache from "./cache";
 import { EXTENSIONS } from "./const";
 
+const DEFAULTS = {
+  watch: false,
+  minify: false
+};
 
 export default {
+  defaults: DEFAULTS,
+
   /**
    * Starts a compiler for the given path(s).
    * @param {string|array} paths: The file-system paths to compile.
@@ -19,7 +25,7 @@ export default {
   compile(paths, options = {}) {
 
     // TODO: Cache at the highest level.
-    // compilerCache.get(paths, options)
+    // cache.get(paths, options)
 
     // Prepare the paths.
     if (!_.isArray(paths)) { paths = _.compact([paths]); }
@@ -31,11 +37,11 @@ export default {
         .unique()
         .value();
     paths.forEach(path => {
-          if (!fs.existsSync(path)) { throw new Error(`The CSS folder path '${ path }' does not exist.`); }
-          if (!fs.lstatSync(path).isDirectory()) { throw new Error(`The CSS folder path '${ path }' is not a directory.`); }
-      });
+        if (!fs.existsSync(path)) { throw new Error(`The CSS folder path '${ path }' does not exist.`); }
+        if (!fs.lstatSync(path).isDirectory()) { throw new Error(`The CSS folder path '${ path }' is not a directory.`); }
+    });
 
-    // Retrieve source files.
+    // Retrieve all CSS source files within the given folders.
     paths.files = _.chain(paths)
         .map(path => fsLocal.childPaths(path))
         .flatten()
@@ -43,7 +49,7 @@ export default {
         .value();
 
     // Prepare options parameters.
-    options.watch = options.watch || false;
+    options.watch = options.watch || DEFAULTS.watch;
     if (options.watch === true) {
       fsWatch(paths); // Start the file-system watcher.
     }
