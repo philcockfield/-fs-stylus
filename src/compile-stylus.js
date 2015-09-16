@@ -44,17 +44,9 @@ export default (paths) => {
   return new Promise((resolve, reject) => {
       fsLocal.processFiles(paths, (args, done) => {
           const { file, path } = args;
-          let css = fsCache.get(path);
-          if (css) {
-            // Already exists in the cache.
-            done(null, { path, css });
-          } else {
-            // Not in cache - compile it now.
-            compileToCss(file, path, mixins, (err, css) => {
-                if (!err) { fsCache.set(path, css); } // Store in the cache.
-                done(err, { path, css });
-            });
-          }
+          compileToCss(file, path, mixins, (err, css) => {
+              done(err, { path, css });
+          });
       })
       .then((result) => resolve(result))
       .catch((err) => reject(err));

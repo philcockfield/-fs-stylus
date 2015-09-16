@@ -46,10 +46,10 @@ export default {
         : options.watch;
 
     // Construct the return promise.
-    const promise = compile(paths.files);
+    const ns = paths.map(item => item);
+    const promise = compile(ns, paths.files);
     promise.options = options;
     promise.paths = paths;
-
 
     // Finish up.
     return promise;

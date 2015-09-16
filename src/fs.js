@@ -26,13 +26,19 @@ export const readFileSync = (path) => {
 
 
 
-export const hash = (paths) => {
-  if (!_.isArray(paths)) { paths = [paths]; }
+export const hash = (...paths) => {
+  paths = _.chain(paths).flatten(paths, true).compact().value();
   const hash = crypto.createHash("md5")
   paths.forEach(path => hash.update(path));
   return hash.digest("hex");
 };
 
+
+export const buildPath = (ns, path) => {
+  const dirName = fsPath.dirname(path);
+  const fileName = fsPath.basename(path);
+  return fsPath.join(__dirname, `../.build/${ hash(ns, dirName) }-${ fileName }`);
+};
 
 
 

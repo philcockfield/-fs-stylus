@@ -4,33 +4,60 @@ import fsPath from "path";
 import * as fsLocal from "./fs";
 import compileStylus from "./compile-stylus";
 import loadCss from "./load-css";
+import fsCache from "./fs-cache";
 
 
-export default (paths) => {
+const merge = (sourceFiles, targetFiles) => {
+    return targetFiles.map(item => {
+        const index = _(sourceFiles).findIndex(m => m.path === item.path)
+        if (index > -1) {
+          item.css = sourceFiles[index].css;
+        }
+        return item;
+    });
+};
+
+
+const loadFromCache = (ns, paths) => {
+
+};
+
+
+
+
+export default (ns, paths) => {
   return new Promise((resolve, reject) => {
-      const files = paths.map(path => { return { path }});
+      // Read in any existing items from cache.
+      //  - store the cached CSS on the return object.
+      //  - remove that existing item from the list to compile.
+      const cachedPaths = fsCache.load(ns, paths);
 
-      const mergeIntoResult = (items) => {
-          items.forEach(item => {
-              const index = _(files).findIndex(m => m.path === item.path)
-              files[index].css = item.css
-          });
-      };
+      // Create the return array.
+      //  - populate with any CSS that already exists in the cache.
+      let files = paths.map(path => {
+          const isCached = _.contains(cachedPaths, path);
+          const css = isCached ? fsCache.get(ns, path) : null;
+          return { path, css };
+      });
+
+      // Remove paths for items that have been retrieved from the cache.
+      paths = _.filter(paths, path => !_.contains(cachedPaths, path));
 
       // Compile stylus.
       compileStylus(paths)
           .then((result) => {
-              mergeIntoResult(result);
+              fsCache.save(ns, result);
+              files = merge(result, files);
           })
           .catch((err) => reject(err))
 
       // Add raw CSS.
       .then(() => {
         loadCss(paths)
-            .then((result) => mergeIntoResult(result))
+            .then((result) => files = merge(result, files))
             .catch((err) => reject(err))
 
-      // Compile into final result.
+      // Concatenate into final result.
       .then(() => {
           try {
             const css = _.chain(files)
