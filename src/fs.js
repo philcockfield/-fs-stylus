@@ -4,10 +4,17 @@ import fsPath from "path";
 import crypto from "crypto";
 
 
+export const isDirectory = (path) => fs.lstatSync(path).isDirectory();
+
+
 export const childPaths = (dir, result = []) => {
+  if (!isDirectory(dir)) {
+    result.push(dir)
+    return result;
+  }
   fs.readdirSync(dir).forEach(file => {
         const path = fsPath.join(dir, file);
-        if (fs.lstatSync(path).isDirectory()) {
+        if (isDirectory(path)) {
           childPaths(path, result); // <== RECURSION.
         } else {
           result.push(path);

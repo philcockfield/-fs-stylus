@@ -1,4 +1,5 @@
 "use strict";
+import _ from "lodash";
 import { expect } from "chai";
 import crypto from "crypto";
 import fs from "fs-extra";
@@ -35,6 +36,13 @@ describe("paths", function() {
       expect(compiler.paths.length).to.equal(1);
       expect(compiler.paths[0]).to.equal(fsPath.resolve(path));
     });
+
+    it("accepts a path to a file", () => {
+      const path = `${ SAMPLES_PATH }/root.styl`;
+      const compiler = css.compile(path);
+      expect(compiler.paths.files.length).to.equal(1);
+      expect(compiler.paths.files[0]).to.eql(fsPath.resolve(path));
+    });
   });
 
 
@@ -58,6 +66,15 @@ describe("paths", function() {
       const files = compiler.paths.files;
       expect(files).not.to.include(fsPath.resolve(SAMPLES_PATH, ".foo"));
       expect(files).not.to.include(fsPath.resolve(SAMPLES_PATH, "foo.js"));
+    });
+
+    it("does not have the same file twice", () => {
+      const compiler = css.compile([
+        `${ SAMPLES_PATH }/css/normalize.css`,
+        `${ SAMPLES_PATH }/css`
+      ]);
+      const normalizePaths = compiler.paths.files.filter(item => _.endsWith(item, "normalize.css"));
+      expect(normalizePaths.length).to.equal(1);
     });
   });
 });

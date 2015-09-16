@@ -48,9 +48,9 @@ export default {
         .compact()
         .unique()
         .value();
+    paths = _.unique(paths);
     paths.forEach(path => {
         if (!fs.existsSync(path)) { throw new Error(`The CSS folder path '${ path }' does not exist.`); }
-        if (!fs.lstatSync(path).isDirectory()) { throw new Error(`The CSS folder path '${ path }' is not a directory.`); }
     });
 
     // Retrieve all CSS source files within the given folders.
@@ -58,6 +58,7 @@ export default {
         .map(path => fsLocal.childPaths(path))
         .flatten()
         .filter(path => _.contains(EXTENSIONS, fsPath.extname(path)))
+        .unique()
         .value();
 
     // Create the unique namespace for the compiler.

@@ -8,11 +8,14 @@ const SAMPLES_PATH = "./test/samples"
 
 
 describe("compile", function() {
-  it("throws if a directory is not specified as a path", () => {
-    let fn = () => {
-      css.compile(`${ SAMPLES_PATH }/css/page.styl`);
-    };
-    expect(fn).to.throw();
+  it("compiles a single file", (done) => {
+    css.compile(`${ SAMPLES_PATH }/root.styl`)
+    .then(result => {
+        expect(result.files.length).to.equal(1);
+        expect(result.css).to.include("body {");
+        done();
+    })
+    .catch(err => console.error(err));
   });
 
 
@@ -28,6 +31,19 @@ describe("compile", function() {
         expect(result.css).to.include(".plain");
         done();
     })
+    .catch(err => console.error(err));
+  });
+
+
+  it("compiles 'normalize.css' before other CSS", (done) => {
+    css.compile([`${ SAMPLES_PATH }/css/normalize.css`, `${ SAMPLES_PATH }/css`])
+    .then(result => {
+        const indexOfNormalize = result.css.indexOf("normalize.css");
+        const indexOfFirst = result.css.indexOf(".first");
+        expect(indexOfNormalize).to.be.below(indexOfFirst);
+        done();
+    })
+    .catch(err => console.error(err));
   });
 
 
@@ -38,5 +54,6 @@ describe("compile", function() {
         expect(result.css).to.include(match);
         done();
     })
+    .catch(err => console.error(err));
   });
 });
