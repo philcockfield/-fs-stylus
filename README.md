@@ -10,7 +10,6 @@ Supported formats:
 
 
 ## TODO
-- [ ] File-system monitoring (invalidate cache / chokidar)
 - [ ] Compress in production - https://www.npmjs.com/package/clean-css
 
 

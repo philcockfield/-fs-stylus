@@ -62,7 +62,6 @@ describe("cache", function() {
     const mock = sinon.mock(stylusCompiler);
 
     // Call the first time to load the cache.
-    console.log(1);
     css.compile(path, { cache: true })
     .catch(err => console.error(err))
     .then(() => {

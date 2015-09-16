@@ -61,13 +61,14 @@ export default {
         .filter(path => _.contains(EXTENSIONS, fsPath.extname(path)))
         .value();
 
-    // Prepare options parameters.
-    if (options.watch === true) {
-      fsWatch(paths); // Start the file-system watcher.
-    }
-
     // Create the unique namespace for the compiler.
     const ns = paths.map(item => item);
+
+    // Prepare options parameters.
+    if (options.watch === true) {
+      fsWatch(ns, paths.files); // Start the file-system watcher.
+    }
+
 
     // Construct the return promise.
     const promise = new Promise((resolve, reject) => {
