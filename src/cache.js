@@ -1,6 +1,6 @@
 import _ from "lodash";
 import * as fsLocal from "./fs";
-const CACHE = {};
+let cache = {};
 
 
 const getKey = (paths, options) => {
@@ -18,7 +18,13 @@ const getKey = (paths, options) => {
  * Top level cache of compiled CSS.
  */
 export default {
-  get(paths, options = {}) { return CACHE[getKey(paths, options)]; },
-  set(paths, options, css) { CACHE[getKey(paths, options)] = css; },
-  remove(paths, options) { delete CACHE[getKey(paths, options)]; }
+  key: getKey,
+  keys() { return _.keys(cache); },
+  value(key, value) {
+    if (value === null) { delete cache[key]; }
+    if (value !== undefined) { cache[key] = value; }
+    return cache[key]
+  },
+  remove(key) { this.value(key, null); },
+  clear() { cache = {}; }
 };

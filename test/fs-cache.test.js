@@ -26,7 +26,7 @@ describe("Build folder (cache)", function() {
           });
           done();
       })
-      .catch(err => console.log("ERROR", err));
+      .catch(err => console.error("ERROR", err));
     });
 
     it("partially loads from the file system", (done) => {
@@ -39,7 +39,7 @@ describe("Build folder (cache)", function() {
           expect(result.css).to.include("from cache!");
           done();
       })
-      .catch(err => console.log("ERROR", err));
+      .catch(err => console.error("ERROR", err));
     });
   });
 

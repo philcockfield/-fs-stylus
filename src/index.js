@@ -9,7 +9,8 @@ import { EXTENSIONS } from "./const";
 
 const DEFAULTS = {
   watch: false,
-  minify: false
+  minify: false,
+  cache: true
 };
 
 export default {
@@ -21,11 +22,23 @@ export default {
    * @param {object} options:
    *                    - watch:  Flag indicating if file-system watching is enabled.
    *                    - minify: Flag indicating if the css should be minified.
+   *                    - cache:  Flag indicating if caching should be employed.
    */
   compile(paths, options = {}) {
+    // Setup initial conditions.
+    const cacheKey = cache.key(paths, options)
+    options.minify = options.minify || DEFAULTS.minify;
+    options.cache = _.isUndefined(options.cache) ? DEFAULTS.cache : options.cache;
+    options.watch = options.watch || DEFAULTS.watch;
 
-    // TODO: Cache at the highest level.
-    // cache.get(paths, options)
+    // Check the cache.
+    if (options.cache === true) {
+      let css = cache.value(cacheKey);
+      if (css) {
+        // The value exists in the cache - return from here.
+        return new Promise((resolve, reject) => { resolve({ css }) });
+      }
+    }
 
     // Prepare the paths.
     if (!_.isArray(paths)) { paths = _.compact([paths]); }
@@ -49,7 +62,6 @@ export default {
         .value();
 
     // Prepare options parameters.
-    options.watch = options.watch || DEFAULTS.watch;
     if (options.watch === true) {
       fsWatch(paths); // Start the file-system watcher.
     }
@@ -58,10 +70,18 @@ export default {
     const ns = paths.map(item => item);
 
     // Construct the return promise.
-    const promise = compile(ns, paths.files);
+    const promise = new Promise((resolve, reject) => {
+        compile(ns, paths.files)
+        .then(result => {
+            if (options.cache === true) {
+              cache.value(cacheKey, result.css);
+            }
+            resolve(result);
+        })
+        .catch(err => reject(err));
+    });
     promise.options = options;
     promise.paths = paths;
-    promise.css = null;
 
     // Finish up.
     return promise;

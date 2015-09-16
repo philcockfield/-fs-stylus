@@ -32,7 +32,7 @@ const compileToCss = (stylusText, path, mixins, callback) => {
  * @param {array} paths: An array of paths to the source [.styl] files.
  * @return {promise}.
  */
-export default (paths) => {
+const compile = (paths) => {
   if (!_.isArray(paths)) { paths = [paths]; }
 
   // Extract mixin files.
@@ -52,3 +52,7 @@ export default (paths) => {
       .catch((err) => reject(err));
   });
 };
+
+
+
+export default { compile };

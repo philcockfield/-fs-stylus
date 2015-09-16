@@ -3,6 +3,7 @@ import { expect } from "chai";
 import fs from "fs-extra";
 import fsPath from "path";
 import css from "../src";
+import cache from "../src/cache";
 const SAMPLES_PATH = "./test/samples"
 
 
@@ -13,6 +14,7 @@ describe("compile", function() {
     };
     expect(fn).to.throw();
   });
+
 
   it("compiles all CSS in a folder", (done) => {
     css.compile(`${ SAMPLES_PATH }/css`)
@@ -27,6 +29,7 @@ describe("compile", function() {
         done();
     })
   });
+
 
   it("compiles a directory using mixins from another directory", (done) => {
     css.compile([`${ SAMPLES_PATH }/css`, `${ SAMPLES_PATH }/mixins`])

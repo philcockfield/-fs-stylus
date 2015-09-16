@@ -2,10 +2,10 @@
 import { expect } from "chai";
 import fs from "fs-extra";
 import fsPath from "path";
-import compileStylus from "../src/compile-stylus";
+import compiler from "../src/compile-stylus";
 
 const SAMPLES_PATH = "./test/samples"
-
+const compileStylus = compiler.compile;
 
 
 describe("compile-stylus", function() {

@@ -2,7 +2,7 @@ import _ from "lodash";
 import fs from "fs-extra";
 import fsPath from "path";
 import * as fsLocal from "./fs";
-import compileStylus from "./compile-stylus";
+import stylusCompiler from "./compile-stylus";
 import loadCss from "./load-css";
 import fsCache from "./fs-cache";
 
@@ -39,7 +39,7 @@ export default (ns, paths) => {
       paths = _.filter(paths, path => !_.contains(cachedPaths, path));
 
       // Compile stylus.
-      compileStylus(paths)
+      stylusCompiler.compile(paths)
           .then((result) => {
               fsCache.save(ns, result);
               files = merge(result, files);
