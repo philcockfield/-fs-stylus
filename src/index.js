@@ -9,9 +9,9 @@ import CleanCSS from "clean-css";
 import { EXTENSIONS } from "./const";
 
 const DEFAULTS = {
-  watch: false,
-  minify: false,
-  cache: true
+  watch: false,   // Flag indicating if file-system watching is enabled.
+  minify: false,  // Flag indicating if the css should be minified.
+  cache: true     // Flag indicating if caching should be employed.
 };
 
 export default {
@@ -20,10 +20,8 @@ export default {
   /**
    * Starts a compiler for the given path(s).
    * @param {string|array} paths: The file-system paths to compile.
-   * @param {object} options:
-   *                    - watch:  Flag indicating if file-system watching is enabled.
-   *                    - minify: Flag indicating if the css should be minified.
-   *                    - cache:  Flag indicating if caching should be employed.
+   * @param {object} options.
+   * @return {Promise}
    */
   compile(paths, options = {}) {
     // Setup initial conditions.
