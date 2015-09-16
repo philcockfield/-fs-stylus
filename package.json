@@ -1,6 +1,6 @@
 {
   "name": "fs-css",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A super-fast CSS pre-processor compiler that finds, builds, caches and monitors files across the file-system.",
   "main": "./lib/index.js",
   "dependencies": {
