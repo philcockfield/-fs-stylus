@@ -95,16 +95,6 @@ describe("Build folder (cache)", function() {
         fs.outputFileSync(buildPath, "from file");
         expect(fsCache.get(ns, path)).to.equal("from file");
       });
-
-      it("reads from cache", () => {
-        const ns = ["path1", "path2"];
-        const path = "foo/bar.styl";
-        const buildPath = fsLocal.buildPath(ns, path);
-        fs.outputFileSync(buildPath, "from file");
-        fsCache.get(ns, path); // Read from FS.
-        fs.removeSync(buildPath); // Delete the file.
-        expect(fsCache.get(ns, path)).to.equal("from file");
-      });
     });
 
     describe("remove", function() {

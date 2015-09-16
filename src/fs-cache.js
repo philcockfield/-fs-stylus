@@ -3,15 +3,10 @@ import fs from "fs-extra";
 import fsPath from "path";
 import * as fsLocal from "./fs";
 
-const CACHE = {};
 const BUILD_PATH = fsPath.join(__dirname, "../.build");
 fs.ensureDirSync(BUILD_PATH);
 
-
-const remove = (buildPath) => {
-  delete CACHE[buildPath];
-  fs.removeSync(buildPath);
-};
+const remove = (buildPath) => fs.removeSync(buildPath);
 
 
 /**
@@ -21,21 +16,17 @@ const remove = (buildPath) => {
  */
 export default {
   /**
-   * Gets the item from the cache.
+   * Gets the item from the file-system.
    * @param {array|string} ns: A unique string/array to group the files by.
    */
   get(ns, path) {
     const buildPath = fsLocal.buildPath(ns, path);
-    const result = CACHE[buildPath]
-        ? CACHE[buildPath]
-        : fsLocal.readFileSync(buildPath);
-    CACHE[buildPath] = result;
-    return result;
+    return fsLocal.readFileSync(buildPath);
   },
 
 
   /**
-   * Saves CSS to file and stores it in the memory cahe.
+   * Saves CSS to a file.
    * @param {array|string} ns: A unique string/array to group the files by.
    * @param path: The path of the source file.
    * @param css:  The compiled CSS.
@@ -43,12 +34,11 @@ export default {
   set(ns, path, css) {
     const buildPath = fsLocal.buildPath(ns, path);
     fs.outputFileSync(buildPath, css);
-    CACHE[buildPath] = css;
   },
 
 
   /**
-   * Removes the specified item from the cache.
+   * Removes the specified item from the file-system.
    * @param {array|string} ns: A unique string/array to group the files by.
    * @param path: The path of the source file.
    */
@@ -56,16 +46,16 @@ export default {
 
 
   /**
-   * Deletes all files stored in the [.build] cache.
+   * Deletes all files stored in the [.build] file-system.
    */
   clear() { fsLocal.childPaths(BUILD_PATH).forEach(path => remove(path)); },
 
 
   /**
-   * Loads all given files into the cache.
+   * Loads all given files into the file-system.
    * @param {array|string} ns: A unique string/array to group the files by.
    * @param {array} paths: The source file paths to load.
-   * @return {array} of the paths that were loaded from the cache.
+   * @return {array} of the paths that were loaded from the file-system.
    */
   load(ns, ...paths) {
     return _.chain(paths)
@@ -86,7 +76,7 @@ export default {
     return _.chain(items)
             .flatten()
             .map(item => {
-                this.set(ns, item.path, item.css); // Save to cache/file.
+                this.set(ns, item.path, item.css); // Save to file.
                 return item;
             })
             .value();
