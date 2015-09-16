@@ -5,8 +5,8 @@
 A super-fast CSS compiler that finds, builds, caches and monitors files across the file-system.
 
 Supported formats:
-- Plain CSS (`.css`)
-- [Stylus](https://learnboost.github.io/stylus/) (`.styl`)
+- `.css` - Plain CSS
+- `.styl` - [Stylus](https://learnboost.github.io/stylus/)
 
 
 
