@@ -22,7 +22,7 @@ const concatenate = (files) => {
   return _.chain(files)
                .map(item => item.css)
                .compact()
-               .reduce((result, file) => result += file)
+               .reduce((result, file) => result += `\n\n\n${ file }`)
                .value();
 };
 
