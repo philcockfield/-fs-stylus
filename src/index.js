@@ -9,9 +9,11 @@ import CleanCSS from "clean-css";
 import { EXTENSIONS } from "./const";
 
 const DEFAULTS = {
-  watch: false,   // Flag indicating if file-system watching is enabled.
-  minify: false,  // Flag indicating if the css should be minified.
-  cache: true     // Flag indicating if caching should be employed.
+  watch: false,         // Flag indicating if file-system watching is enabled.
+  minify: false,        // Flag indicating if the css should be minified.
+  cache: true,          // Flag indicating if caching should be employed.
+  pathsRequired: true   // Flag indicating if an error should be thrown if the
+                        // given paths do not exist.
 };
 
 export default {
@@ -29,6 +31,7 @@ export default {
     options.minify = options.minify || DEFAULTS.minify;
     options.cache = _.isUndefined(options.cache) ? DEFAULTS.cache : options.cache;
     options.watch = options.watch || DEFAULTS.watch;
+    options.pathsRequired = options.pathsRequired === undefined ? DEFAULTS.pathsRequired : options.pathsRequired;
 
     // Check the cache.
     if (options.cache === true) {
@@ -49,9 +52,16 @@ export default {
         .unique()
         .value();
     paths = _.unique(paths);
-    paths.forEach(path => {
-        if (!fs.existsSync(path)) { throw new Error(`The CSS folder path '${ path }' does not exist.`); }
+    paths.forEach((path, i) => {
+        if (!fs.existsSync(path)) {
+          if (options.pathsRequired === true) {
+            throw new Error(`The CSS path '${ path }' does not exist.`);
+          } else {
+            paths[i] = null;
+          }
+        }
     });
+    paths = _.compact(paths);
 
     // Retrieve all CSS source files within the given folders.
     paths.files = _.chain(paths)

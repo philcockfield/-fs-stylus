@@ -10,7 +10,7 @@ const SAMPLES_PATH = "./test/samples"
 
 describe("paths", function() {
   describe("paths param", function() {
-    it("throws if not path was given", () => {
+    it("throws if path was not given", () => {
       expect(() => css.compile()).to.throw();
     });
 
@@ -22,7 +22,23 @@ describe("paths", function() {
     });
 
     it("throws if a path does not exist", () => {
-      expect(() => css.compile("./foo")).to.throw();
+      expect(() => css.compile("./not-exist")).to.throw();
+    });
+
+    it("does not throw if the paths does not exist ('pathsRequired' flag)", () => {
+      expect(() => css.compile("./not-exist", { pathsRequired: false })).not.to.throw();
+    });
+
+    it("removes the non-existent path (none)", () => {
+      const options = { pathsRequired: false };
+      expect(css.compile("./not-exist", options).paths.length).to.eql(0);
+    });
+
+    it("removes the non-existent path (several)", () => {
+      const path = `${ SAMPLES_PATH }/css`;
+      const compiler = css.compile([path, "./not-exist"], { pathsRequired: false });
+      expect(compiler.paths.length).to.eql(1);
+      expect(compiler.paths[0]).to.equal(fsPath.resolve(path));
     });
 
     it("does not have the same path more than once", () => {

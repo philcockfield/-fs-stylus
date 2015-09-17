@@ -28,9 +28,11 @@ css.compile(["./site", "./mixins"], { minify: true })
 ## Options
 ```js
 {
-  watch: false,   // Flag indicating if file-system watching is enabled.
-  minify: false,  // Flag indicating if the css should be minified.
-  cache: true     // Flag indicating if caching should be employed.
+  watch: false,         // Flag indicating if file-system watching is enabled.
+  minify: false,        // Flag indicating if the css should be minified.
+  cache: true,          // Flag indicating if caching should be employed.
+  pathsRequired: true   // Flag indicating if an error should be thrown if the
+                        // given paths do not exist.
 }
 
 css.compile("./path", { /* options */ });
