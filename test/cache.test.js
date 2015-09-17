@@ -4,6 +4,7 @@ import fsPath from "path";
 import sinon from "sinon";
 import css from "../src";
 import cache from "../src/cache";
+import fsCache from "../src/fs-cache";
 import stylusCompiler from "../src/compile-stylus";
 const SAMPLES_PATH = "./test/samples"
 
@@ -69,12 +70,27 @@ describe("cache", function() {
         mock.expects("compile").never();
         css.compile(path, { cache: true })
         .then(() => {
-          mock.verify();
-          mock.restore();
-          done();
+            mock.verify();
+            mock.restore();
+            done();
         })
         .catch(err => console.error(err))
     })
     .catch(err => console.error(err))
+  });
+
+
+  it("[main.clearCache] clears both memory and file-system cached", () => {
+    const cacheMock = sinon.mock(cache);
+    const fsCacheMock = sinon.mock(fsCache);
+    cacheMock.expects("clear").once();
+    fsCacheMock.expects("clear").once();
+
+    css.clearCache();
+
+    cacheMock.verify();
+    fsCacheMock.verify();
+    cacheMock.restore();
+    fsCacheMock.restore();
   });
 });

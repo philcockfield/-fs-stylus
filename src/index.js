@@ -5,6 +5,7 @@ import fsWatch from "./fs-watch";
 import * as fsLocal from "./fs";
 import compile from "./compile";
 import cache from "./cache";
+import fsCache from "./fs-cache";
 import CleanCSS from "clean-css";
 import { EXTENSIONS } from "./const";
 
@@ -18,6 +19,14 @@ const DEFAULTS = {
 
 export default {
   defaults: DEFAULTS,
+
+  /**
+   * Clears the memory and file cache.
+   */
+  clearCache() {
+    fsCache.clear();
+    cache.clear();
+  },
 
   /**
    * Starts a compiler for the given path(s).
