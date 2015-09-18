@@ -83,7 +83,7 @@ export default {
     // Create the unique namespace for the compiler.
     const ns = paths.map(item => item);
 
-    // Prepare options parameters.
+    // Watch the files if in development mode.
     if (options.watch === true) {
       fsWatch(ns, paths.files); // Start the file-system watcher.
     }
