@@ -80,7 +80,7 @@ describe("cache", function() {
   });
 
 
-  it("[main.clearCache] clears both memory and file-system cached", () => {
+  it("[main].clearCache() clears both memory and file-system cache", () => {
     const cacheMock = sinon.mock(cache);
     const fsCacheMock = sinon.mock(fsCache);
     cacheMock.expects("clear").once();

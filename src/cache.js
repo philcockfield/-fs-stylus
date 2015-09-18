@@ -1,6 +1,12 @@
 import _ from "lodash";
 import * as fsLocal from "./fs";
-let cache = {};
+import cacheManager from "cache-manager";
+
+const memoryCache = cacheManager.caching({
+  store: "memory",
+  max: 100,
+  ttl: (60 * 60 * 2) // Time to live: seconds => 2-hours.
+});
 
 
 const getKey = (paths, options) => {
@@ -19,12 +25,12 @@ const getKey = (paths, options) => {
  */
 export default {
   key: getKey,
-  keys() { return _.keys(cache); },
+  keys() { return memoryCache.keys(); },
   value(key, value) {
-    if (value === null) { delete cache[key]; }
-    if (value !== undefined) { cache[key] = value; }
-    return cache[key]
+    if (value === null) { memoryCache.del(key); }
+    if (value !== undefined) { memoryCache.set(key, value); }
+    return memoryCache.get(key);
   },
   remove(key) { this.value(key, null); },
-  clear() { cache = {}; }
+  clear() { memoryCache.reset(); }
 };
