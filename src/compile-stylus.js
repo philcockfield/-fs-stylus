@@ -4,7 +4,6 @@ import nib from "nib";
 import fs from "fs-extra";
 import fsPath from "path";
 import * as fsLocal from "./fs";
-import fsCache from "./fs-cache";
 
 
 const isMixin = (path) => {
