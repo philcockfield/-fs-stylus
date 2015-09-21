@@ -80,13 +80,13 @@ describe("cache", function() {
   });
 
 
-  it("[main].clearCache() clears both memory and file-system cache", () => {
+  it("[main].clearCacheSync() clears both memory and file-system cache", () => {
     const cacheMock = sinon.mock(cache);
     const fsCacheMock = sinon.mock(fsCache);
     cacheMock.expects("clear").once();
-    fsCacheMock.expects("clear").once();
+    fsCacheMock.expects("clearSync").once();
 
-    css.clearCache();
+    css.clearCacheSync();
 
     cacheMock.verify();
     fsCacheMock.verify();

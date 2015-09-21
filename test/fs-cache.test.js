@@ -11,7 +11,7 @@ const SAMPLES_PATH = "./test/samples"
 
 
 describe("Build folder (cache)", function() {
-  beforeEach(() => fsCache.clear());
+  beforeEach(() => fsCache.clearSync());
 
   describe("compile", function() {
     it("caches to file-system upon compiling", (done) => {

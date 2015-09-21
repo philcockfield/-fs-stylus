@@ -48,7 +48,7 @@ export default {
   /**
    * Deletes all files stored in the [.build] file-system.
    */
-  clear() { fsLocal.childPaths(BUILD_PATH).forEach(path => remove(path)); },
+  clearSync() { fsLocal.childPaths(BUILD_PATH).forEach(path => remove(path)); },
 
 
   /**

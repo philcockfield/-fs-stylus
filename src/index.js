@@ -23,8 +23,8 @@ export default {
   /**
    * Clears the memory and file cache.
    */
-  clearCache() {
-    fsCache.clear();
+  clearCacheSync() {
+    fsCache.clearSync();
     cache.clear();
   },
 
