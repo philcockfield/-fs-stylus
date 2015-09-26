@@ -5,9 +5,11 @@ import fsWatch from "./fs-watch";
 import * as fsLocal from "./fs";
 import compile from "./compile";
 import cache from "./cache";
-import fsCache from "./fs-cache";
+import CacheFs from "cache-fs";
 import CleanCSS from "clean-css";
 import { EXTENSIONS } from "./const";
+
+const CACHE_PATH = "./.build";
 
 const DEFAULTS = {
   watch: false,         // Flag indicating if file-system watching is enabled.
@@ -23,8 +25,8 @@ export default {
   /**
    * Clears the memory and file cache.
    */
-  clearCache() {
-    fsCache.clear();
+  delete() {
+    fs.removeSync(fsPath.resolve(CACHE_PATH));
     cache.clear();
   },
 
@@ -81,17 +83,19 @@ export default {
         .value();
 
     // Create the unique namespace for the compiler.
-    const ns = paths.map(item => item);
+    const fileCache = CacheFs({
+      basePath: CACHE_PATH,
+      ns: paths.map(item => item)
+    });
 
     // Watch the files if in development mode.
     if (options.watch === true) {
-      fsWatch(ns, paths.files); // Start the file-system watcher.
+      fsWatch(fileCache, paths.files); // Start the file-system watcher.
     }
-
 
     // Construct the return promise.
     const promise = new Promise((resolve, reject) => {
-        compile(ns, paths.files)
+        compile(fileCache, paths.files)
         .then(result => {
             if (options.minify === true) { result.css = new CleanCSS().minify(result.css).styles; }
             if (options.cache === true) { cache.value(cacheKey, result.css); }

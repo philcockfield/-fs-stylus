@@ -1,10 +1,12 @@
 import _ from "lodash";
+import R from "ramda";
 import fs from "fs-extra";
 import fsPath from "path";
 import * as fsLocal from "./fs";
 import stylusCompiler from "./compile-stylus";
 import loadCss from "./load-css";
-import fsCache from "./fs-cache";
+import CacheFs from "cache-fs";
+
 
 
 const merge = (sourceFiles, targetFiles) => {
@@ -19,55 +21,76 @@ const merge = (sourceFiles, targetFiles) => {
 
 
 const concatenate = (files) => {
-  return _.chain(files)
-               .map(item => item.css)
-               .compact()
-               .reduce((result, file) => result += `\n\n\n${ file }`)
-               .value();
+    return _.chain(files)
+                 .map(item => item.css)
+                 .compact()
+                 .reduce((result, file) => result += `\n\n\n${ file }`)
+                 .value();
+};
+
+
+const saveToDisk = (fileCache, files) => {
+    const toPayload = R.map(item => {
+      return {
+        key: item.path,
+        value: { path: item.path, css: item.css }
+      }
+    });
+    return fileCache.save(toPayload(files));
 };
 
 
 
 
-export default (ns, paths) => {
+export default (fileCache, paths) => {
+  let files, compiledFiles;
+
   return new Promise((resolve, reject) => {
       // Read in any existing items from cache.
       //  - store the cached CSS on the return object.
       //  - remove that existing item from the list to compile.
-      const cachedPaths = fsCache.load(ns, paths);
+      fileCache.load()
+      .then(cached => {
+          const cachedFiles = R.filter(item => item.value)(cached.files)
+          const cachedPaths = R.map(item => item.value.path)(cachedFiles);
+          const isCached = (path) => R.contains(path)(cachedPaths);
+          const cachedFile = (path) => R.find(item => item.value.path === path)(cachedFiles);
+          const uncachedPaths = R.reject(isCached, paths);
 
-      // Create the return array.
-      //  - populate with any CSS that already exists in the cache.
-      let files = paths.map(path => {
-          const isCached = _.contains(cachedPaths, path);
-          const css = isCached ? fsCache.get(ns, path) : null;
-          return { path, css };
-      });
+          // Create the return array.
+          //  - populate with any CSS that already exists in the cache.
+          files = paths.map(path => {
+              const fromCache = cachedFile(path);
+              const css = fromCache ? fromCache.value.css : undefined;
+              return { path, css };
+          });
 
-      // Remove paths for items that have been retrieved from the cache.
-      paths = _.filter(paths, path => !_.contains(cachedPaths, path));
 
-      // Compile stylus.
-      stylusCompiler.compile(paths)
-          .then((result) => {
-              fsCache.save(ns, result);
-              files = merge(result, files);
-          })
-          .catch((err) => reject(err))
+          // Compile stylus.
+          stylusCompiler.compile(uncachedPaths)
+              .then(result => compiledFiles = result)
+              .catch(err => reject(err))
 
-      // Add raw CSS.
-      .then(() => {
-        loadCss(paths)
-            .then((result) => files = merge(result, files))
-            .catch((err) => reject(err))
+          // Merge the compiled files into the result set.
+          .then(() => files = merge(compiledFiles, files))
 
-      // Concatenate into final result.
-      .then(() => {
-          try {
-            const css = concatenate(files);
-            resolve({ files, css });
-          } catch (e) { reject(e) }
+          // Cache CSS to disk.
+          .then(() => saveToDisk(fileCache, compiledFiles))
+
+          // Add raw CSS files (.css)
+          .then(() => {
+            return loadCss(paths)
+                   .then(result => files = merge(result, files))
+
+          // Concatenate into final result.
+          .then(() => {
+              try {
+                resolve({ files, css: concatenate(files) });
+              } catch (e) { reject(e) }
+          });
+
       })
-    })
+      .catch(err => reject(err));
+    });
   });
 };

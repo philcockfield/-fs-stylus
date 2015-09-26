@@ -1,7 +1,10 @@
+import fs from "fs-extra";
+import fsPath from "path";
 import cache from "../src/cache";
-import fsCache from "../src/fs-cache";
 
-before(() => fsCache.clear());
-after(() => fsCache.clear());
+const deleteBuildFolder = () => fs.removeSync(fsPath.resolve("./.build"));
+
+before(() => deleteBuildFolder());
+after(() => deleteBuildFolder());
 
 beforeEach(() => cache.clear());
