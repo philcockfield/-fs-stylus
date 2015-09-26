@@ -5,13 +5,14 @@
   "main": "./lib/index.js",
   "dependencies": {
     "bluebird": "^2.10.0",
-    "cache-fs": "0.0.3",
+    "cache-fs": "^1.0.0",
     "cache-manager": "^1.1.0",
     "chokidar": "^1.0.5",
     "clean-css": "^3.4.3",
     "fs-extra": "^0.24.0",
     "lodash": "^3.10.1",
     "nib": "^1.1.0",
+    "ramda": "^0.17.1",
     "stylus": "^0.52.4"
   },
   "devDependencies": {

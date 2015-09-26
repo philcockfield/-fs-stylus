@@ -4,14 +4,7 @@ import nib from "nib";
 import fs from "fs-extra";
 import fsPath from "path";
 import * as fsLocal from "./fs";
-
-
-const isMixin = (path) => {
-    const name = fsPath.basename(path, ".styl");
-    if (name === "mixin") { return true; }
-    if (_.endsWith(name, ".mixin")) { return true; }
-    return false;
-  };
+import { isMixin } from "./util";
 
 
 const compileToCss = (stylusText, path, mixins, callback) => {
@@ -22,7 +15,6 @@ const compileToCss = (stylusText, path, mixins, callback) => {
     mixins.forEach(path => { compiler.import(path); });
     compiler.render(callback);
   };
-
 
 
 

@@ -1,34 +1,39 @@
-import _ from "lodash";
+import R from "ramda";
 import fsPath from "path";
 import chokidar from "chokidar";
 import memoryCache from "./cache";
-import fsCache from "./fs-cache";
 import * as fsLocal from "./fs";
+import { isMixin } from "./util";
+import { EXTENSIONS } from "./const";
 
+const COMPILERS = [];
+const isCss = (path) => R.any(ext => path.endsWith(ext))(EXTENSIONS);
 
-const COMPILERS = {};
-const EXTENSIONS = [".styl", ".css"];
-const isCss = (path) => _.chain(EXTENSIONS).any(ext => _.endsWith(path, ext)).value();
-
-
-const nsFromPath = (path) => {
-  const key = _.chain(COMPILERS)
-               .keys()
-               .find(key => _.find(COMPILERS[key].files, (p) => p === path))
-               .value();
-  if (key) {
-    return COMPILERS[key].ns;
-  }
+const cachesFromPath = (path) => {
+  const isMatch = (item) => R.contains(path, item.files);
+  return R.pipe(
+    R.filter(isMatch),
+    R.map(R.prop("fileCache"))
+  )(COMPILERS);
 };
 
 
 const onCssFileChanged = (path) => {
-  // Remove the specific file from the [.build] file-system cache.
-  fsCache.remove(nsFromPath(path), path);
+  cachesFromPath(path).forEach(cache => {
+        if (isMixin(path)) {
+          // Mixins effect multiple files,
+          // clear the entire set of cached files.
+          cache.clear();
+        } else {
+          // Delete the single file.
+          cache.remove(path);
+        }
+  });
 
   // Clear the memory cache.
   memoryCache.clear();
 };
+
 
 
 let isWatching = false;
@@ -45,10 +50,8 @@ const startWatching = () => {
 
 
 
-export default (ns, files) => {
-  startWatching();
-
+export default (fileCache, files) => {
   // Store reference to the compiler settings.
-  const key = fsLocal.hash(ns, files);
-  COMPILERS[key] = { ns, files };
+  COMPILERS.push({ fileCache, files });
+  startWatching();
 };
