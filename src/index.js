@@ -9,7 +9,7 @@ import CacheFs from "cache-fs";
 import CleanCSS from "clean-css";
 import { EXTENSIONS } from "./const";
 
-export const CACHE_PATH = "./.build/css-cache";
+export const CACHE_PATH = "./.build/css";
 
 const DEFAULTS = {
   watch: false,         // Flag indicating if file-system watching is enabled.
