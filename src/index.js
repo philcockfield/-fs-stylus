@@ -1,4 +1,4 @@
-import _ from "lodash";
+import R from "ramda";
 import fs from "fs-extra";
 import fsPath from "path";
 import fsWatch from "./fs-watch";
@@ -40,7 +40,7 @@ export default {
     // Setup initial conditions.
     const cacheKey = cache.key(paths, options)
     options.minify = options.minify || DEFAULTS.minify;
-    options.cache = _.isUndefined(options.cache) ? DEFAULTS.cache : options.cache;
+    options.cache = R.isNil(options.cache) ? DEFAULTS.cache : options.cache;
     options.watch = options.watch || DEFAULTS.watch;
     options.pathsRequired = options.pathsRequired === undefined ? DEFAULTS.pathsRequired : options.pathsRequired;
 
@@ -54,15 +54,16 @@ export default {
     }
 
     // Prepare the paths.
-    if (!_.isArray(paths)) { paths = _.compact([paths]); }
+    if (!R.is(Array, paths)) { paths = R.reject(R.isNil, [paths]); }
     if (paths.length === 0) { throw new Error(`File-system 'path' was not specified.`); }
-    paths = _.chain(paths)
-        .flatten(true)
-        .map(path => _.startsWith(path, ".") ? fsPath.resolve(path) : path)
-        .compact()
-        .unique()
-        .value();
-    paths = _.unique(paths);
+
+    paths = R.pipe(
+            R.flatten,
+            R.map(path => path && path.startsWith(".") ? fsPath.resolve(path) : path),
+            R.reject(R.isNil),
+            R.uniq
+    )(paths);
+
     paths.forEach((path, i) => {
         if (!fs.existsSync(path)) {
           if (options.pathsRequired === true) {
@@ -72,15 +73,15 @@ export default {
           }
         }
     });
-    paths = _.compact(paths);
+    paths = R.reject(R.isNil, paths);
 
     // Retrieve all CSS source files within the given folders.
-    paths.files = _.chain(paths)
-        .map(path => util.childPaths(path))
-        .flatten()
-        .filter(path => _.contains(EXTENSIONS, fsPath.extname(path)))
-        .unique()
-        .value();
+    paths.files = R.pipe(
+                  R.map(path => util.childPaths(path)),
+                  R.flatten,
+                  R.filter(path => R.contains(fsPath.extname(path), EXTENSIONS)),
+                  R.uniq
+    )(paths);
 
     // Create the unique namespace for the compiler.
     const fileCache = CacheFs({

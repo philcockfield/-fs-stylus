@@ -1,6 +1,4 @@
-import _ from "lodash";
-import fs from "fs-extra";
-import fsPath from "path";
+import R from "ramda";
 import * as util from "./util";
 
 
@@ -10,13 +8,14 @@ import * as util from "./util";
  * @return {promise}.
  */
 export default (paths) => {
-  if (!_.isArray(paths)) { paths = [paths]; }
-  paths = _(paths).filter(path => _.endsWith(path, ".css")).value();
+  if (!R.is(Array, paths)) { paths = [paths]; }
+  paths = R.filter(path => path.endsWith(".css"), paths);
+
   return new Promise((resolve, reject) => {
-    util.processFiles(paths, (args, done) => {
-        done(null, { path: args.path, css: args.file });
-    })
-    .then((result) => resolve(result))
-    .catch((err) => reject(err));
+      util.processFiles(paths, (args, done) => {
+          done(null, { path: args.path, css: args.file });
+      })
+      .then(result => resolve(result))
+      .catch(err => reject(err));
   });
 };

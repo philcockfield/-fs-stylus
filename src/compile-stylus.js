@@ -1,4 +1,4 @@
-import _ from "lodash";
+import R from "ramda";
 import stylus from "stylus";
 import nib from "nib";
 import fs from "fs-extra";
@@ -23,23 +23,21 @@ const compileToCss = (stylusText, path, mixins, callback) => {
  * @return {promise}.
  */
 const compile = (paths) => {
-  if (!_.isArray(paths)) { paths = [paths]; }
+  if (!R.is(Array, paths)) { paths = [paths]; }
+  paths = R.filter(path => path.endsWith(".styl"), paths);
 
-  // Extract mixin files.
-  paths = _(paths).filter(path => _.endsWith(path, ".styl")).value();
-  const mixins = _(paths).filter(util.isMixin).value();
-  paths = _(paths).filter(path => !util.isMixin(path)).value();
+  // Seperate the mixin files.
+  const mixinPaths = R.filter(util.isMixin, paths);
+  const stylusPaths = R.filter(path => !util.isMixin(path), paths);
 
   // Compile Stylus => CSS.
   return new Promise((resolve, reject) => {
-      util.processFiles(paths, (args, done) => {
+      util.processFiles(stylusPaths, (args, done) => {
           const { file, path } = args;
-          compileToCss(file, path, mixins, (err, css) => {
-              done(err, { path, css });
-          });
+          compileToCss(file, path, mixinPaths, (err, css) => done(err, { path, css }));
       })
-      .then((result) => resolve(result))
-      .catch((err) => reject(err));
+      .then(result => resolve(result))
+      .catch(err => reject(err));
   });
 };
 

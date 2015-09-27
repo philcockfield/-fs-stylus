@@ -1,4 +1,4 @@
-import _ from "lodash";
+import R from "ramda";
 import fs from "fs-extra";
 import fsPath from "path";
 import crypto from "crypto";
@@ -44,7 +44,7 @@ export const readFileSync = (path) => {
 
 
 export const hash = (...paths) => {
-  paths = _.chain(paths).flatten(paths, true).compact().value();
+  paths = R.pipe(R.flatten, R.reject(R.isNil))(paths);
   const hash = crypto.createHash("md5")
   paths.forEach(path => hash.update(path));
   return hash.digest("hex");
@@ -54,7 +54,7 @@ export const hash = (...paths) => {
 
 
 export const processFiles = (paths, handler) => {
-  if (!_.isArray(paths)) { paths = [paths]; }
+  if (!R.is(Array, paths)) { paths = [paths]; }
 
   return new Promise((resolve, reject) => {
     const result = [];

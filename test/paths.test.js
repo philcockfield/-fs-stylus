@@ -1,5 +1,4 @@
 "use strict";
-import _ from "lodash";
 import { expect } from "chai";
 import fsPath from "path";
 import css from "../src";
@@ -87,7 +86,7 @@ describe("paths", function() {
         `${ SAMPLES_PATH }/css/normalize.css`,
         `${ SAMPLES_PATH }/css`
       ]);
-      const normalizePaths = compiler.paths.files.filter(item => _.endsWith(item, "normalize.css"));
+      const normalizePaths = compiler.paths.files.filter(item => item.endsWith("normalize.css"));
       expect(normalizePaths.length).to.equal(1);
     });
   });

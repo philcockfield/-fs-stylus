@@ -1,4 +1,4 @@
-import _ from "lodash";
+import R from "ramda";
 import * as util from "./util";
 import cacheManager from "cache-manager";
 
@@ -10,12 +10,12 @@ const memoryCache = cacheManager.caching({
 
 
 const getKey = (paths, options) => {
-  options = _.chain(options)
-      .values()
-      .map(value => value.toString())
-      .compact()
-      .value();
-  return util.hash(paths, options);
+  const asStrings = R.pipe(
+                        R.values,
+                        R.map(R.toString),
+                        R.reject(R.isNil)
+                      );
+  return util.hash(paths, asStrings(options));
 };
 
 

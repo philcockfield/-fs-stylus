@@ -1,5 +1,4 @@
 "use strict";
-import _ from "lodash";
 import R from "ramda";
 import { expect } from "chai";
 import fs from "fs-extra";

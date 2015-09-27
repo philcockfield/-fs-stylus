@@ -1,4 +1,3 @@
-import _ from "lodash";
 import R from "ramda";
 import fs from "fs-extra";
 import fsPath from "path";
@@ -10,7 +9,7 @@ import CacheFs from "cache-fs";
 
 const merge = (sourceFiles, targetFiles) => {
     return targetFiles.map(item => {
-        const index = _(sourceFiles).findIndex(m => m.path === item.path)
+        const index = R.findIndex(m => m.path === item.path, sourceFiles);
         if (index > -1) {
           item.css = sourceFiles[index].css;
         }
@@ -20,11 +19,9 @@ const merge = (sourceFiles, targetFiles) => {
 
 
 const concatenate = (files) => {
-    return _.chain(files)
-                 .map(item => item.css)
-                 .compact()
-                 .reduce((result, file) => result += `\n\n\n${ file }`)
-                 .value();
+    const css = R.pipe(R.map(R.prop("css")), R.reject(R.isNil));
+    const append = (result, file) => result += `\n\n\n${ file }`;
+    return R.reduce(append, "", css(files))
 };
 
 
