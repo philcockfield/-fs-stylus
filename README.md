@@ -18,7 +18,7 @@ import css from "fs-css";
 
 css.compile(["./site", "./mixins"], { minify: true })
 .then(result => {
-    // Do something with the resulting CSS, eg.
+    // Do something with the resulting CSS, for example:
     req.send(result.css);
 })
 .catch(err => throw(err));
@@ -26,6 +26,7 @@ css.compile(["./site", "./mixins"], { minify: true })
 
 
 ## Options
+Pass in options to the compiler (default values shown):
 ```js
 {
   watch: false,         // Flag indicating if file-system watching is enabled.
