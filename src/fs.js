@@ -41,12 +41,6 @@ export const hash = (...paths) => {
 };
 
 
-export const buildPath = (ns, path) => {
-  const dirName = fsPath.dirname(path);
-  const fileName = fsPath.basename(path);
-  return fsPath.join(__dirname, `../.build/${ hash(ns, dirName) }-${ fileName }`);
-};
-
 
 
 export const processFiles = (paths, handler) => {
