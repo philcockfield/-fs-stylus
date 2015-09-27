@@ -7,7 +7,6 @@ import fsPath from "path";
 import CacheFs from "cache-fs";
 import css from "../src";
 import { CACHE_PATH } from "../src";
-import * as fsLocal from "../src/fs";
 
 const SAMPLES_PATH = "./test/samples";
 

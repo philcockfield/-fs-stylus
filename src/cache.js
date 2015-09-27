@@ -1,5 +1,5 @@
 import _ from "lodash";
-import * as fsLocal from "./fs";
+import * as util from "./util";
 import cacheManager from "cache-manager";
 
 const memoryCache = cacheManager.caching({
@@ -15,7 +15,7 @@ const getKey = (paths, options) => {
       .map(value => value.toString())
       .compact()
       .value();
-  return fsLocal.hash(paths, options);
+  return util.hash(paths, options);
 };
 
 

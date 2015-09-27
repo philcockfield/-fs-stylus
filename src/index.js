@@ -2,7 +2,7 @@ import _ from "lodash";
 import fs from "fs-extra";
 import fsPath from "path";
 import fsWatch from "./fs-watch";
-import * as fsLocal from "./fs";
+import * as util from "./util";
 import compile from "./compile";
 import cache from "./cache";
 import CacheFs from "cache-fs";
@@ -76,7 +76,7 @@ export default {
 
     // Retrieve all CSS source files within the given folders.
     paths.files = _.chain(paths)
-        .map(path => fsLocal.childPaths(path))
+        .map(path => util.childPaths(path))
         .flatten()
         .filter(path => _.contains(EXTENSIONS, fsPath.extname(path)))
         .unique()

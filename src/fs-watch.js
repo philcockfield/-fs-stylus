@@ -2,7 +2,6 @@ import R from "ramda";
 import fsPath from "path";
 import chokidar from "chokidar";
 import memoryCache from "./cache";
-import * as fsLocal from "./fs";
 import { isMixin } from "./util";
 import { EXTENSIONS } from "./const";
 

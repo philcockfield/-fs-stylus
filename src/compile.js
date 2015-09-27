@@ -2,7 +2,6 @@ import _ from "lodash";
 import R from "ramda";
 import fs from "fs-extra";
 import fsPath from "path";
-import * as fsLocal from "./fs";
 import stylusCompiler from "./compile-stylus";
 import loadCss from "./load-css";
 import CacheFs from "cache-fs";

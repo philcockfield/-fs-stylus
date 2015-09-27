@@ -3,8 +3,7 @@ import stylus from "stylus";
 import nib from "nib";
 import fs from "fs-extra";
 import fsPath from "path";
-import * as fsLocal from "./fs";
-import { isMixin } from "./util";
+import * as util from "./util";
 
 
 const compileToCss = (stylusText, path, mixins, callback) => {
@@ -28,12 +27,12 @@ const compile = (paths) => {
 
   // Extract mixin files.
   paths = _(paths).filter(path => _.endsWith(path, ".styl")).value();
-  const mixins = _(paths).filter(isMixin).value();
-  paths = _(paths).filter(path => !isMixin(path)).value();
+  const mixins = _(paths).filter(util.isMixin).value();
+  paths = _(paths).filter(path => !util.isMixin(path)).value();
 
   // Compile Stylus => CSS.
   return new Promise((resolve, reject) => {
-      fsLocal.processFiles(paths, (args, done) => {
+      util.processFiles(paths, (args, done) => {
           const { file, path } = args;
           compileToCss(file, path, mixins, (err, css) => {
               done(err, { path, css });
