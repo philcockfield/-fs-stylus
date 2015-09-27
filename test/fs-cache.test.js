@@ -6,22 +6,23 @@ import fs from "fs-extra";
 import fsPath from "path";
 import CacheFs from "cache-fs";
 import css from "../src";
+import { CACHE_PATH } from "../src";
 import * as fsLocal from "../src/fs";
 
 const SAMPLES_PATH = "./test/samples";
-const CACHE_PATH = fsPath.resolve("./.build");
 
-const deleteBuildFolder = () => fs.removeSync(CACHE_PATH);
+const deleteCacheFolder = () => fs.removeSync(fsPath.resolve(CACHE_PATH));
 const loadBuildFiles = () => {
   return R.pipe(
-      R.map(fileName => fsPath.join(CACHE_PATH, fileName)),
+      R.map(fileName => fsPath.resolve(CACHE_PATH, fileName)),
       R.map(path => fs.readFileSync(path).toString())
   )(fs.readdirSync(CACHE_PATH));
 }
 
 
 describe("Build folder (cache)", function() {
-  beforeEach(() => deleteBuildFolder());
+  beforeEach(() => deleteCacheFolder());
+  after(() => deleteCacheFolder());
 
 
   it("caches to file-system upon compiling", (done) => {
@@ -42,7 +43,7 @@ describe("Build folder (cache)", function() {
   it("partially loads from the file system", (done) => {
     const folderPath = fsPath.resolve(`${ SAMPLES_PATH }/2-files`);
     const filePath = fsPath.resolve(folderPath, "one.styl");
-    const cache = CacheFs({ basePath: "./.build", ns: [folderPath] });
+    const cache = CacheFs({ basePath: CACHE_PATH, ns: [folderPath] });
     cache.setSync(filePath, { path: filePath, css: "from cache!" })
 
     css.compile(folderPath)
