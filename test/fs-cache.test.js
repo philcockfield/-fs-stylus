@@ -6,10 +6,11 @@ import fsPath from "path";
 import FileSystemCache from "file-system-cache";
 import css from "../src";
 import { CACHE_PATH } from "../src";
+import { deleteCacheFolder } from "./_util";
+
 
 const SAMPLES_PATH = "./test/samples";
 
-const deleteCacheFolder = () => fs.removeSync(fsPath.resolve(CACHE_PATH));
 const loadBuildFiles = () => {
   return R.pipe(
       R.map(fileName => fsPath.resolve(CACHE_PATH, fileName)),
