@@ -1,6 +1,6 @@
-# fs-css
+# file-system-css
 
-[![Build Status](https://travis-ci.org/philcockfield/fs-css.svg?branch=master)](https://travis-ci.org/philcockfield/fs-css)
+[![Build Status](https://travis-ci.org/philcockfield/file-system-css.svg?branch=master)](https://travis-ci.org/philcockfield/file-system-css)
 
 A super-fast CSS compiler that finds, builds, caches and monitors files across the file-system.
 
@@ -14,7 +14,7 @@ Supported formats:
 Pass a path (or array of paths) to the folders containing your source files (.css, .styl):
 
 ```js
-import css from "fs-css";
+import css from "file-system-css";
 
 css.compile(["./site", "./mixins"], { minify: true })
 .then(result => {

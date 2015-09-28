@@ -1,5 +1,5 @@
 {
-  "name": "fs-css",
+  "name": "file-system-css",
   "version": "1.0.15",
   "description": "A super-fast CSS compiler that finds, builds, caches and monitors files across the file-system.",
   "main": "./lib/index.js",
@@ -34,7 +34,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/philcockfield/fs-css"
+    "url": "https://github.com/philcockfield/file-system-css"
   },
   "keywords": [
     "stylus,css,fs,file-system,compiler,cache"
@@ -44,6 +44,6 @@
     "email": "phil@cockfield.net",
     "url": "https://github.com/philcockfield"
   },
-  "homepage": "https://github.com/philcockfield/fs-css",
+  "homepage": "https://github.com/philcockfield/file-system-css",
   "license": "MIT"
 }
