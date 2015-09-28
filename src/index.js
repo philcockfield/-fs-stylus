@@ -5,7 +5,7 @@ import fsWatch from "./fs-watch";
 import * as util from "./util";
 import compile from "./compile";
 import cache from "./cache";
-import CacheFs from "cache-fs";
+import FileSystemCache from "file-system-cache";
 import CleanCSS from "clean-css";
 import { EXTENSIONS } from "./const";
 
@@ -84,7 +84,7 @@ export default {
     )(paths);
 
     // Create the unique namespace for the compiler.
-    const fileCache = CacheFs({
+    const fileCache = FileSystemCache({
       basePath: CACHE_PATH,
       ns: paths.map(item => item)
     });

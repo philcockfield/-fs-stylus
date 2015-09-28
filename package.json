@@ -5,7 +5,7 @@
   "main": "./lib/index.js",
   "dependencies": {
     "bluebird": "^2.10.0",
-    "cache-fs": "^1.0.0",
+    "file-system-cache": "^1.0.0",
     "cache-manager": "^1.1.0",
     "chokidar": "^1.0.5",
     "clean-css": "^3.4.3",

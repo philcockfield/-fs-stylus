@@ -3,7 +3,7 @@ import R from "ramda";
 import { expect } from "chai";
 import fs from "fs-extra";
 import fsPath from "path";
-import CacheFs from "cache-fs";
+import FileSystemCache from "file-system-cache";
 import css from "../src";
 import { CACHE_PATH } from "../src";
 
@@ -41,7 +41,7 @@ describe("Build folder (cache)", function() {
   it("partially loads from the file system", (done) => {
     const folderPath = fsPath.resolve(`${ SAMPLES_PATH }/2-files`);
     const filePath = fsPath.resolve(folderPath, "one.styl");
-    const cache = CacheFs({ basePath: CACHE_PATH, ns: [folderPath] });
+    const cache = FileSystemCache({ basePath: CACHE_PATH, ns: [folderPath] });
     cache.setSync(filePath, { path: filePath, css: "from cache!" })
 
     css.compile(folderPath)
