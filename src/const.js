@@ -1,1 +1,1 @@
-export const EXTENSIONS = [".styl", ".css"];
+export const EXTENSIONS = ['.styl', '.css'];

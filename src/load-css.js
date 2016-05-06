@@ -1,5 +1,5 @@
-import R from "ramda";
-import * as util from "./util";
+import R from 'ramda';
+import * as util from './util';
 
 
 /**
@@ -9,13 +9,13 @@ import * as util from "./util";
  */
 export default (paths) => {
   if (!R.is(Array, paths)) { paths = [paths]; }
-  paths = R.filter(path => path.endsWith(".css"), paths);
+  paths = R.filter(path => path.endsWith('.css'), paths);
 
   return new Promise((resolve, reject) => {
-      util.processFiles(paths, (args, done) => {
-          done(null, { path: args.path, css: args.file });
-      })
-      .then(result => resolve(result))
-      .catch(err => reject(err));
+    util.processFiles(paths, (args, done) => {
+      done(null, { path: args.path, css: args.file });
+    })
+    .then(result => resolve(result))
+    .catch(err => reject(err));
   });
 };

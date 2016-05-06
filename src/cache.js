@@ -1,11 +1,11 @@
-import R from "ramda";
-import * as util from "./util";
-import cacheManager from "cache-manager";
+import R from 'ramda';
+import * as util from './util';
+import cacheManager from 'cache-manager';
 
 const memoryCache = cacheManager.caching({
-  store: "memory",
+  store: 'memory',
   max: 100,
-  ttl: (60 * 60 * 2) // Time to live: seconds => 2-hours.
+  ttl: (60 * 60 * 2), // Time to live: seconds => 2-hours.
 });
 
 
@@ -32,5 +32,5 @@ export default {
     return memoryCache.get(key);
   },
   remove(key) { this.value(key, null); },
-  clear() { memoryCache.reset(); }
+  clear() { memoryCache.reset(); },
 };

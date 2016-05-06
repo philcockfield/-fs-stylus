@@ -1,21 +1,21 @@
-import R from "ramda";
-import fs from "fs-extra";
-import fsPath from "path";
-import fsWatch from "./fs-watch";
-import * as util from "./util";
-import compile from "./compile";
-import cache from "./cache";
-import FileSystemCache from "file-system-cache";
-import CleanCSS from "clean-css";
-import { EXTENSIONS } from "./const";
+import R from 'ramda';
+import fs from 'fs-extra';
+import fsPath from 'path';
+import fsWatch from './fs-watch';
+import * as util from './util';
+import compile from './compile';
+import cache from './cache';
+import createFileSystemCache from 'file-system-cache';
+import CleanCSS from 'clean-css';
+import { EXTENSIONS } from './const';
 
-export const CACHE_PATH = "./.build/css";
+export const CACHE_PATH = './.build/css';
 
 const DEFAULTS = {
   watch: false,         // Flag indicating if file-system watching is enabled.
   minify: false,        // Flag indicating if the css should be minified.
   cache: true,          // Flag indicating if caching should be employed.
-  pathsRequired: true   // Flag indicating if an error should be thrown if the
+  pathsRequired: true,   // Flag indicating if an error should be thrown if the
                         // given paths do not exist.
 };
 
@@ -38,18 +38,20 @@ export default {
    */
   compile(paths, options = {}) {
     // Setup initial conditions.
-    const cacheKey = cache.key(paths, options)
+    const cacheKey = cache.key(paths, options);
     options.minify = options.minify || DEFAULTS.minify;
     options.cache = R.isNil(options.cache) ? DEFAULTS.cache : options.cache;
     options.watch = options.watch || DEFAULTS.watch;
-    options.pathsRequired = options.pathsRequired === undefined ? DEFAULTS.pathsRequired : options.pathsRequired;
+    options.pathsRequired = options.pathsRequired === undefined
+      ? DEFAULTS.pathsRequired
+      : options.pathsRequired;
 
     // Check the cache.
     if (options.cache === true) {
-      let css = cache.value(cacheKey);
+      const css = cache.value(cacheKey);
       if (css) {
         // The value exists in the cache - return from here.
-        return new Promise((resolve, reject) => { resolve({ css }) });
+        return new Promise(resolve => resolve({ css }));
       }
     }
 
@@ -59,19 +61,19 @@ export default {
 
     paths = R.pipe(
             R.flatten,
-            R.map(path => path && path.startsWith(".") ? fsPath.resolve(path) : path),
+            R.map(path => path && path.startsWith('.') ? fsPath.resolve(path) : path),
             R.reject(R.isNil),
             R.uniq
     )(paths);
 
     paths.forEach((path, i) => {
-        if (!fs.existsSync(path)) {
-          if (options.pathsRequired === true) {
-            throw new Error(`The CSS path '${ path }' does not exist.`);
-          } else {
-            paths[i] = null;
-          }
+      if (!fs.existsSync(path)) {
+        if (options.pathsRequired === true) {
+          throw new Error(`The CSS path '${ path }' does not exist.`);
+        } else {
+          paths[i] = null;
         }
+      }
     });
     paths = R.reject(R.isNil, paths);
 
@@ -84,9 +86,9 @@ export default {
     )(paths);
 
     // Create the unique namespace for the compiler.
-    const fileCache = FileSystemCache({
+    const fileCache = createFileSystemCache({
       basePath: CACHE_PATH,
-      ns: paths.map(item => item)
+      ns: paths.map(item => item),
     });
 
     // Watch the files if in development mode.
@@ -96,18 +98,18 @@ export default {
 
     // Construct the return promise.
     const promise = new Promise((resolve, reject) => {
-        compile(fileCache, paths.files)
-        .then(result => {
-            if (options.minify === true) { result.css = new CleanCSS().minify(result.css).styles; }
-            if (options.cache === true) { cache.value(cacheKey, result.css); }
-            resolve(result);
-        })
-        .catch(err => reject(err));
+      compile(fileCache, paths.files)
+      .then(result => {
+        if (options.minify === true) { result.css = new CleanCSS().minify(result.css).styles; }
+        if (options.cache === true) { cache.value(cacheKey, result.css); }
+        resolve(result);
+      })
+      .catch(err => reject(err));
     });
     promise.options = options;
     promise.paths = paths;
 
     // Finish up.
     return promise;
-  }
+  },
 };
