@@ -25,7 +25,7 @@ const getKey = (paths, options) => {
  */
 export default {
   key: getKey,
-  keys() { return memoryCache.keys(); },
+  keys: () => memoryCache.keys(),
   value(key, value) {
     if (value === null) { memoryCache.del(key); }
     if (value !== undefined) { memoryCache.set(key, value); }
